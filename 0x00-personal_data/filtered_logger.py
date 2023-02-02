@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-""" filtered larger module """
+""" filtered logger module """
 import logging
 import re
 import typing
+from os import getenv
+import mysql.connector
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -40,14 +42,13 @@ class RedactingFormatter(logging.Formatter):
 
 def get_logger() -> logging.Logger:
     """ logger method that returns a logging.Logger object """
-    userlog = logging.getLogger('user_data')
-    userlog.setLevel(logging.Info)
-    userlog.propagate = False
+    user_data = logging.getLogger('user_data')
+    user_data.setLevel(logging.INFO)
+    user_data.propagate = False
     sh = logging.StreamHandler()
-    useFormat = RedactingFormatter(PII_FIELDS)
-    sh.setFormatter(useFormat)
-    userlog.addHandler(sh)
-    return userlog
+    sh.setFormatter(RedactingFormatter(PII_FIELDS))
+    user_data.addHandler(sh)
+    return user_data
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
